@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { instance as api } from "../utils/axios";
+import api from "../utils/axios"; 
 
 const AuthContext = createContext(null);
 
@@ -8,6 +8,7 @@ export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const navigate = useNavigate();
 
+  
   useEffect(() => {
     const token = localStorage.getItem("token");
     const name = localStorage.getItem("name");
@@ -18,6 +19,7 @@ export const AuthProvider = ({ children }) => {
     }
   }, []);
 
+  
   const login = async (email, password) => {
     try {
       const res = await api.post("/auth/login", { email, password });
@@ -28,7 +30,6 @@ export const AuthProvider = ({ children }) => {
       localStorage.setItem("userId", id);
 
       setUser({ token, name, id });
-
       navigate("/");
     } catch (err) {
       console.error("Login failed", err);
@@ -36,6 +37,7 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
+  
   const signup = async (name, email, password) => {
     try {
       await api.post("/auth/signup", { name, email, password });
@@ -48,13 +50,13 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
+ 
   const logout = () => {
     localStorage.removeItem("token");
     localStorage.removeItem("name");
     localStorage.removeItem("userId");
 
     setUser(null);
-
     navigate("/login");
   };
 
@@ -72,4 +74,3 @@ export const AuthProvider = ({ children }) => {
 export const useAuth = () => {
   return useContext(AuthContext);
 };
-
